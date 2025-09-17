@@ -1,0 +1,668 @@
+import React, { useState, useEffect } from 'react'
+import './App.css'
+import { Button } from './components/ui/button'
+import { Card, CardContent } from './components/ui/card'
+import { Badge } from './components/ui/badge'
+import { Star, CheckCircle, Users, Award, Heart, ArrowUp, Play, Calendar, Phone, MapPin, Clock } from 'lucide-react'
+import ImageCarousel from './components/ImageCarousel'
+import SmoothScroll from './components/SmoothScroll'
+
+// Import das imagens
+import heroVideo from './assets/crioharmonizacao_video_thumbnail.png'
+import clinicaInterior from './assets/clinica_todabella_interior.jpeg'
+import draAdrianaPortrait from './assets/dra_adriana_nova.png' // Usando a imagem original sem cortes
+import logoTodabella from './assets/logo_todabella.png'
+import antesDepois1 from './assets/crioharmonizacao_antes_depois_1.png'
+import antesDepois2 from './assets/crioharmonizacao_antes_depois_2.png'
+import antesDepois3 from './assets/crioharmonizacao_antes_depois_3.png'
+import antesDepois4 from './assets/crioharmonizacao_antes_depois_4.png'
+import posGestacao from './assets/pos_gestacao_antes_depois_1.png'
+import flacidez from './assets/flacidez_antes_depois_1.png'
+import lipoHp from './assets/lipo_hp_antes_depois_1.png'
+
+function App() {
+  const [showScrollTop, setShowScrollTop] = useState(false)
+  const [activeTab, setActiveTab] = useState('antes-depois')
+  const [selectedVideo, setSelectedVideo] = useState(null)
+  const [videoKey, setVideoKey] = useState(0)
+  const [showVideoInline, setShowVideoInline] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+
+  const casosImages = [antesDepois1, antesDepois2, antesDepois3, antesDepois4, posGestacao, flacidez, lipoHp]
+  
+  const depoimentos = [
+    {
+      nome: "Ana Clara Santos",
+      tempo: "Paciente há 4 meses",
+      comentario: "Depois de 3 filhos, meu corpo estava completamente diferente. Com a Crioharmonização recuperei minha autoestima e meu corpo ficou melhor do que antes da gravidez!",
+      estrelas: 5
+    },
+    {
+      nome: "Roberta Silva",
+      tempo: "Paciente há 6 meses", 
+      comentario: "Fiz várias dietas e sempre recuperava o peso. Com o programa da Todabella não só eliminei gordura localizada como mantive os resultados até hoje!",
+      estrelas: 5
+    },
+    {
+      nome: "Camila Mendes",
+      tempo: "Paciente há 3 meses",
+      comentario: "Meu marido não acreditou quando disse que não fiz cirurgia! Os resultados são impressionantes e o melhor: sem cortes e sem riscos. Recomendo demais!",
+      estrelas: 5
+    },
+    {
+      nome: "Dienerilã Borges",
+      tempo: "05/08/2023",
+      comentario: "Foi muito bom mas quero mais ainda kkkk 🤭",
+      estrelas: 5
+    },
+    {
+      nome: "Elizandra Andrade", 
+      tempo: "03/08/2023",
+      comentario: "Ótimo gostei muito as meninas são muito atenciosas estão de parabéns 👏👏👏",
+      estrelas: 5
+    },
+    {
+      nome: "Luciene Siqueira",
+      tempo: "03/08/2023", 
+      comentario: "Excelente atendimento e os melhores serviços",
+      estrelas: 5
+    }
+  ]
+
+  // Função para extrair ID do YouTube de uma URL
+  const extractYouTubeId = (url) => {
+    if (!url) return null
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+    const match = url.match(regExp)
+    return (match && match[2].length === 11) ? match[2] : null
+  }
+
+  const videos = [
+    { id: 1, titulo: "Apresentação do Programa", thumbnail: heroVideo, duracao: "3:45", youtubeId: "WoGkyUBBZ7g" },
+    { id: 2, titulo: "Depoimento Ana Clara", thumbnail: antesDepois1, duracao: "2:30", youtubeId: "WoGkyUBBZ7g" },
+    { id: 3, titulo: "Resultados em 120 dias", thumbnail: antesDepois2, duracao: "4:15", youtubeId: "WoGkyUBBZ7g" },
+    { id: 4, titulo: "Técnica Exclusiva", thumbnail: antesDepois3, duracao: "5:20", youtubeId: "WoGkyUBBZ7g" }
+  ]
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="bg-white shadow-md py-4 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <h1 className="text-2xl font-bold text-[#E0A3C4]">Todabella</h1>
+          </div>
+          <nav className="hidden md:flex space-x-8">
+            <SmoothScroll to="programa" className="font-medium hover:text-purple-600 transition-colors">O Programa</SmoothScroll>
+            <SmoothScroll to="resultados" className="font-medium hover:text-purple-600 transition-colors">Resultados</SmoothScroll>
+            <SmoothScroll to="indicado" className="font-medium hover:text-purple-600 transition-colors">Para Quem</SmoothScroll>
+            <SmoothScroll to="doutora" className="font-medium hover:text-purple-600 transition-colors">Dra. Adriana</SmoothScroll>
+          </nav>
+          <Button className="md:hidden">
+            <Users className="w-4 h-4" />
+          </Button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section id="hero" className="bg-gradient-to-br from-purple-50 to-pink-50 py-20 px-4 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto relative z-10">
+          {!showVideoInline ? (
+            // Conteúdo normal do hero
+            <div className="flex flex-col md:flex-row items-center animate-fade-in">
+              {/* Conteúdo à esquerda */}
+              <div className="md:w-1/2 mb-10 md:mb-0 md:pr-12 order-2 md:order-1">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in">
+                  Descubra o Poder<br />
+                  da <span className="text-[#E0A3C4]">Crioharmonização</span>
+                </h1>
+                <p className="text-xl mb-8 text-gray-600 animate-fade-in-delay">
+                  Seu Corpo, Suas Regras, Sem Cirurgia Plástica!
+                </p>
+                
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 animate-fade-in-delay-2">
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-[#FF4D88] to-[#E0A3C4] hover:from-[#e04377] hover:to-[#c58bab] text-white px-8 py-4 text-lg rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
+                  >
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Agendar Consulta
+                  </Button>
+                  <Button 
+                    size="lg"
+                    className="bg-white border-2 border-[#FF4D88] px-8 py-4 text-lg rounded-full transition-all duration-300 hover:bg-[#FFF0F4] hover:scale-105"
+                    onClick={() => {
+                      setShowVideoInline(true)
+                      setVideoKey(prev => prev + 1)
+                    }}
+                  >
+                    <Play className="w-5 h-5 mr-2 text-[#FF4D88]" />
+                    <span className="bg-gradient-to-r from-[#FF4D88] to-[#E0A3C4] bg-clip-text text-transparent">Assista o Vídeo</span>
+                  </Button>
+                </div>
+
+                <div className="flex flex-wrap gap-4 mt-8 animate-fade-in-delay-3">
+                  <Badge variant="outline" className="px-4 py-2 bg-white border-green-200 text-green-700">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    SEM CORTES E SEM RISCOS
+                  </Badge>
+                  <Badge variant="outline" className="px-4 py-2 bg-white border-purple-200 text-purple-700">
+                    <Award className="w-4 h-4 mr-2" />
+                    TÉCNICA EXCLUSIVA
+                  </Badge>
+                  <Badge variant="outline" className="px-4 py-2 bg-white border-red-200 text-red-700">
+                    <Heart className="w-4 h-4 mr-2" />
+                    PROCEDIMENTO SEGURO
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Imagem da doutora à direita */}
+              <div className="md:w-1/2 flex justify-end order-1 md:order-2 relative h-full w-full">
+                <img 
+                  src={draAdrianaFull} 
+                  alt="Dra. Adriana Ferreira" 
+                  className="absolute bottom-0 right-0 h-full w-full object-cover z-0 animate-fade-in-delay-3"
+                />
+                <div className="absolute bottom-5 right-5 bg-white p-4 rounded-lg shadow-lg z-10">
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-[#E0A3C4]">12.000+</p>
+                    <p className="text-sm text-gray-600">Clientes Atendidos</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Vídeo inline centralizado
+            <div className="text-center animate-fade-in">
+              <div className="mb-8">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="border-purple-600 text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 mb-6"
+                  onClick={() => setShowVideoInline(false)}
+                >
+                  <ArrowUp className="w-5 h-5 mr-2 rotate-45" />
+                  Voltar ao Conteúdo
+                </Button>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                  Apresentação do Programa de Crioharmonização
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Assista ao vídeo explicativo sobre nossa técnica exclusiva
+                </p>
+              </div>
+              
+              {/* Container do vídeo responsivo */}
+              <div className="relative w-full max-w-4xl mx-auto">
+                <div className="aspect-video bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+                  <iframe
+                    key={videoKey}
+                    src={`https://www.youtube.com/embed/WoGkyUBBZ7g?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1`}
+                    title="Apresentação do Programa de Crioharmonização"
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <p className="text-gray-600 text-sm">
+                  Duração: 3:45 • Clínica Todabella Manaus
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* O que é Crioharmonização */}
+      <section id="programa" className="py-20 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+              O que é o Programa de CRIOHARMONIZAÇÃO?
+            </h2>
+            <div className="w-24 h-1 bg-purple-600 mx-auto mb-8"></div>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="relative">
+              <img 
+                src={clinicaInterior} 
+                alt="Programa Crioharmonização" 
+                className="w-full rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-300"
+                onError={(e) => {
+                  e.target.style.display = 'none'
+                  e.target.nextSibling.style.display = 'flex'
+                }}
+              />
+              <div className="w-full h-96 bg-gradient-to-br from-purple-200 to-pink-300 rounded-2xl shadow-2xl hidden items-center justify-center">
+                <p className="text-purple-700 text-xl font-semibold">Programa Crioharmonização</p>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-lg mb-6 leading-relaxed">
+                <strong>É um programa de harmonização corporal EXCLUSIVO TODABELLA</strong> com duração de 120 dias.
+              </p>
+              <p className="mb-6 text-gray-600 leading-relaxed">
+                Sabe aquela gordura abdominal ou aquela dobra na região das costas que te deixa extremamente envergonhada 
+                para usar determinadas roupas? Esse programa é para você. E eu posso dizer, eu te transformo!!!
+              </p>
+              <p className="mb-6 text-gray-600 leading-relaxed">
+                Com apenas 5 passos, você será transformada. Esqueça tudo que você já viu por aí, os resultados chegam 
+                a ser comparados a uma cirurgia plástica. São muitos casos de sucesso.
+              </p>
+              <p className="mb-8 text-gray-600 leading-relaxed">
+                Se você também quer fazer parte do meu time de harmonizadas, eu te convido a agendar uma consulta 
+                estética com minha equipe.
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-[#FF4D88] to-[#E0A3C4] hover:from-[#e04377] hover:to-[#c58bab] text-white px-8 py-4 text-lg rounded-full transition-all duration-300 hover:scale-105"
+              >
+                Quero me Transformar
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Resultados Section */}
+      <section id="resultados" className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              Veja o que os nossos pacientes tem a dizer
+            </h2>
+            <div className="w-24 h-1 bg-purple-600 mx-auto mb-8"></div>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Esqueça tudo que você já viu por aí, os resultados chegam a ser comparados a uma cirurgia plástica. 
+              São muitos casos de sucesso
+            </p>
+          </div>
+
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold mb-8 text-center">Veja os casos tratados</h3>
+            <p className="text-center mb-8 text-gray-600">Navegue pelos botões para ver TODOS OS CASOS</p>
+            
+            <div className="flex justify-center space-x-4 mb-12">
+              <Button 
+                onClick={() => setActiveTab('antes-depois')}
+                className={activeTab === 'antes-depois' 
+                  ? "bg-purple-600 text-white px-6 py-2 rounded-full" 
+                  : "border border-purple-600 text-purple-600 bg-white px-6 py-2 rounded-full hover:bg-purple-50"
+                }
+              >
+                Antes/Depois
+              </Button>
+              <Button 
+                onClick={() => setActiveTab('depoimentos')}
+                className={activeTab === 'depoimentos' 
+                  ? "bg-purple-600 text-white px-6 py-2 rounded-full" 
+                  : "border border-purple-600 text-purple-600 bg-white px-6 py-2 rounded-full hover:bg-purple-50"
+                }
+              >
+                Depoimentos
+              </Button>
+              <Button 
+                onClick={() => setActiveTab('videos')}
+                className={activeTab === 'videos' 
+                  ? "bg-purple-600 text-white px-6 py-2 rounded-full" 
+                  : "border border-purple-600 text-purple-600 bg-white px-6 py-2 rounded-full hover:bg-purple-50"
+                }
+              >
+                Vídeos
+              </Button>
+            </div>
+          </div>
+
+          {/* Antes/Depois Section */}
+          {activeTab === 'antes-depois' && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {casosImages.map((imagem, index) => (
+                <Card key={index} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                  <CardContent className="p-0">
+                    <img 
+                      src={imagem} 
+                      alt={`Transformação ${index + 1}`}
+                      className="w-full h-64 object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none'
+                        e.target.nextSibling.style.display = 'flex'
+                      }}
+                    />
+                    <div className="w-full h-64 bg-gradient-to-br from-purple-100 to-pink-200 hidden items-center justify-center">
+                      <p className="text-purple-600 font-semibold">Transformação {index + 1}</p>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-center font-bold text-purple-600">
+                        {index < 4 ? 'Crioharmonização' : index === 4 ? 'Pós Gestação' : index === 5 ? 'Flacidez' : 'Lipo HP'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Depoimentos Section */}
+          {activeTab === 'depoimentos' && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {depoimentos.map((depoimento, index) => (
+                <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mr-4">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold">{depoimento.nome}</h4>
+                        <p className="text-sm text-gray-500">{depoimento.tempo}</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 mb-4">{depoimento.comentario}</p>
+                    <div className="flex">
+                      {[...Array(depoimento.estrelas)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Vídeos Section */}
+          {activeTab === 'videos' && (
+            <div>
+              {!selectedVideo ? (
+                // Lista de vídeos
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                  {videos.map((video) => (
+                    <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                          onClick={() => {
+                            setSelectedVideo(video)
+                            setVideoKey(prev => prev + 1)
+                          }}>
+                      <CardContent className="p-0">
+                        <div className="relative">
+                          <img 
+                            src={video.thumbnail} 
+                            alt={video.titulo}
+                            className="w-full h-48 object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none'
+                              e.target.nextSibling.style.display = 'flex'
+                            }}
+                          />
+                          <div className="w-full h-48 bg-gradient-to-br from-purple-100 to-pink-200 hidden items-center justify-center">
+                            <p className="text-purple-600 font-semibold">{video.titulo}</p>
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-lg hover:bg-purple-700 transition-colors">
+                              <Play className="w-8 h-8 text-white ml-1" />
+                            </div>
+                          </div>
+                          <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm">
+                            {video.duracao}
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <p className="font-semibold text-gray-800">{video.titulo}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                // Vídeo selecionado inline
+                <div className="text-center mb-12 animate-fade-in">
+                  <div className="mb-8">
+                    <Button 
+                      variant="outline" 
+                      size="lg"
+                      className="border-purple-600 text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 mb-6"
+                      onClick={() => setSelectedVideo(null)}
+                    >
+                      <ArrowUp className="w-5 h-5 mr-2 rotate-45" />
+                      Voltar aos Vídeos
+                    </Button>
+                    <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+                      {selectedVideo.titulo}
+                    </h3>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                      Assista ao vídeo selecionado
+                    </p>
+                  </div>
+                  
+                  {/* Container do vídeo responsivo */}
+                  <div className="relative w-full max-w-4xl mx-auto">
+                    <div className="aspect-video bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+                      <iframe
+                        key={videoKey}
+                        src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1`}
+                        title={selectedVideo.titulo}
+                        className="w-full h-full"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8">
+                    <p className="text-gray-600 text-sm">
+                      Duração: {selectedVideo.duracao} • Clínica Todabella Manaus
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Por que os resultados são extraordinários */}
+      <section className="py-20 px-4 bg-purple-50">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            Porque os Resultados são extraordinários?
+          </h2>
+          <div className="w-24 h-1 bg-purple-600 mx-auto mb-8"></div>
+          <p className="text-lg text-gray-600 mb-16 max-w-2xl mx-auto">
+            Montamos um processo que vai permitir que você reduza permanentemente medidas através de três pilares:
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Heart className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Tratando a gordura</h3>
+                <p className="text-gray-600">Vamos programar a morte da célula de gordura</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Users className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Tratando Flacidez</h3>
+                <p className="text-gray-600">Você vai produzir um colágeno de qualidade, você vai ficar magra sem ficar flácida.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Award className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Desenhando o músculo</h3>
+                <p className="text-gray-600">A sua musculatura ficará em evidência e assim surgirá um abdômen em formato LipoHD.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Para quem é indicado */}
+      <section id="indicado" className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-gray-800 mb-16">
+            Pra quem é indicado o programa de CrioHarmonização?
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6 text-left">
+            {[
+              "Se você deseja atingir os resultados desejados para obter o corpo dos sonhos,",
+              "Se você é alguém que tenha realizado cirurgias plásticas anteriormente, mas adquiriu gordurinhas extras que estão gerando insegurança,",
+              "Se você é um praticante assíduo de atividades físicas e ainda não alcançou resultados significativos na academia,",
+              "Se você é uma mamãe que busca recuperar o corpo que tinha antes da gestação,",
+              "Se você realizou programas de emagrecimento com dietas, perdeu peso, mas não conseguiu modelar seu corpo como desejava,",
+              "Se você procura uma alternativa real para transformar o corpo sem recorrer à cirurgia plástica, mas deseja resultados similares",
+              "Se você deseja sentir-se atraente e desejado, melhorando as curvas do corpo."
+            ].map((texto, index) => (
+              <Card key={index} className="p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="flex items-start p-0">
+                  <CheckCircle className="w-6 h-6 text-purple-600 mr-4 flex-shrink-0 mt-1" />
+                  <p className="text-gray-700 text-lg">{texto}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Conheça a Dra. Adriana */}
+      <section id="doutora" className="py-20 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="relative">
+              <img 
+                src={draAdrianaFull} 
+                alt="Dra. Adriana Ferreira" 
+                className="w-full rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-300"
+                onError={(e) => {
+                  e.target.style.display = 'none'
+                  e.target.nextSibling.style.display = 'flex'
+                }}
+              />
+              <div className="w-full h-96 bg-gradient-to-br from-purple-200 to-pink-300 rounded-2xl shadow-2xl hidden items-center justify-center">
+                <p className="text-purple-700 text-xl font-semibold">Dra. Adriana Ferreira</p>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-4xl font-bold text-gray-800 mb-8">
+                Conheça a Dra. Adriana Ferreira
+              </h2>
+              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                Fisioterapeuta no ramo da estética há 13 anos, empresária e CEO da Clínica de Estética Todabella, 
+                reconhecida na Capital de Manaus como especialista na área de Harmonização corporal, onde hoje, 
+                já são mais de <strong>12.000 pacientes transformados.</strong>
+              </p>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                <strong>Criadora do programa de Crioharmonização Corporal Exclusivo Todabella,</strong> método 
+                revolucionário e que permite a realização do seu sonho pessoal.
+              </p>
+              <p className="text-xl font-semibold text-purple-600 mb-8">Adriana Ferreira</p>
+              
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-[#FF4D88] to-[#E0A3C4] hover:from-[#e04377] hover:to-[#c58bab] text-white px-8 py-4 text-lg rounded-full transition-all duration-300 hover:scale-105"
+              >
+                <Phone className="w-5 h-5 mr-2" />
+                Falar com a Dra. Adriana
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <h3 className="text-2xl font-bold mb-4">Todabella Manaus</h3>
+              <p className="text-gray-400 mb-6">
+                Transformando vidas através da Crioharmonização Corporal. 
+                Mais de 12.000 clientes atendidos e muitas vidas transformadas.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-white hover:text-purple-400 transition-colors">
+                  <Users className="w-6 h-6" />
+                </a>
+                <a href="#" className="text-white hover:text-purple-400 transition-colors">
+                  <Heart className="w-6 h-6" />
+                </a>
+                <a href="#" className="text-white hover:text-purple-400 transition-colors">
+                  <Phone className="w-6 h-6" />
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-bold mb-4 text-lg">Links Rápidos</h3>
+              <ul className="space-y-2">
+                <li><SmoothScroll to="programa" className="hover:text-purple-400 transition-colors">O Programa</SmoothScroll></li>
+                <li><SmoothScroll to="resultados" className="hover:text-purple-400 transition-colors">Resultados</SmoothScroll></li>
+                <li><SmoothScroll to="indicado" className="hover:text-purple-400 transition-colors">Para Quem</SmoothScroll></li>
+                <li><SmoothScroll to="doutora" className="hover:text-purple-400 transition-colors">Dra. Adriana</SmoothScroll></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-bold mb-4 text-lg">Contato</h3>
+              <ul className="space-y-2">
+                <li className="flex items-center"><MapPin className="w-4 h-4 mr-2" /> Manaus, AM</li>
+                <li className="flex items-center"><Phone className="w-4 h-4 mr-2" /> (92) 99999-9999</li>
+                <li className="flex items-center"><Clock className="w-4 h-4 mr-2" /> Seg-Sex: 8h às 18h</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Todabella Manaus. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </footer>
+
+
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 bg-gradient-to-r from-[#FF4D88] to-[#E0A3C4] hover:from-[#e04377] hover:to-[#c58bab] text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50"
+        >
+          <ArrowUp className="w-6 h-6" />
+        </button>
+      )}
+    </div>
+  )
+}
+
+export default App
+
